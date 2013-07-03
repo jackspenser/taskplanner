@@ -92,6 +92,10 @@ class Task(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
+    start_date = db.Column(db.Date)
+    due_date = db.Column(db.Date)
+    percent_complete = db.Column(db.Integer)
+    complete_date = db.Column(db.Date)
     notes = db.relationship('TaskNote', backref='task', lazy='dynamic')
     
     def __repr__(self):
