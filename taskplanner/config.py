@@ -2,6 +2,7 @@ import os
 
 class Config(object):
     DEBUG = False
+    SECRET_KEY = '\n\xa6<\x12\x8d\xdc5\x15\x88\x95,\xcbz\xad\x9e\xda>\xaf\x1c\xe3\xff\x99\x9cG'
 
 class DevelopmentConfig(Config):
     DEBUG = True
