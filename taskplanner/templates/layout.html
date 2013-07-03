@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+        <title>{% block title %}Taskplanner{% endblock %}</title>
+    </head>
+    <body>
+        <div id="main">
+            <div class="loggedin">
+            {% if not session.user %}
+            <a href="{{ url_for('login') }}">log in</a>
+            {% else %}
+              <a href="{{ url_for('logout') }}">log out</a>
+            {% endif %}
+            </div>
+            {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+            {% endfor %}
+            {% if session.user %}
+            <br />
+            {% endif %}
+            {% block body %}{% endblock %}
+            </div>
+        </div>      
+    </body>
+</html>
