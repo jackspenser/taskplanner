@@ -1,6 +1,7 @@
 from taskplanner import app
 from taskplanner.model import db, User, Task, Project
 from taskplanner.helpers import login_required, in_role
+from taskplanner.forms import LoginForm
 from flask import request, session, redirect, url_for, render_template, flash
 
 @app.route('/')
@@ -17,12 +18,12 @@ def adminview():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
-    if request.method == 'POST':
-        theUser = User.query.filter_by(username=request.form['username']).\
-                first()
+    form = LoginForm(request.form)
+    if form.validate_on_submit():
+        theUser = User.query.filter_by(username=form.username.data).first()
         if not theUser:
             error = 'Invalid username'
-        elif not theUser.check_password(request.form['password']):
+        elif not theUser.check_password(form.password.data):
             error = 'Invalid password'
         else:
             session['user'] = theUser.username
@@ -35,7 +36,7 @@ def login():
         # check for next url
         if request.args.get('next'):
             session['next'] = request.args.get('next')
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, form=form)
 
 @app.route('/logout')
 def logout():

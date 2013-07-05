@@ -6,6 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 requires = [
     'flask',
     'Flask-SQLAlchemy',
+    'Flask-WTF',
     'pbkdf2',
 ]
 
