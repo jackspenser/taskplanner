@@ -2,4 +2,7 @@
 {% block body %}
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
 <h2>Admin Landing</h2>
+<ul>
+    <li><a href="{{ url_for('add_role') }}">Add Role</a></li>
+</ul>
 {% endblock %}
