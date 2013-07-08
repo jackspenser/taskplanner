@@ -17,14 +17,15 @@ def getuser():
     else:
         abort(404)
     
-def in_role(role):
-    def wrap(f):
-        def wrapped_f(*args, **kwargs):
+def required_roles(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
             user = getuser()
-            if not user.has_role(role):
-                abort(401)
+            for role in roles:
+                if not user.has_role(role):
+                    abort(401)
             return f(*args, **kwargs)
-        return wrapped_f
-    return wrap
-        
+        return wrapped
+    return wrapper
     

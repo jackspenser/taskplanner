@@ -1,19 +1,21 @@
 from taskplanner import app
 from taskplanner.model import db, User, Task, Project
-from taskplanner.helpers import login_required, in_role
+from taskplanner.helpers import login_required, required_roles
 from taskplanner.forms import LoginForm
 from flask import request, session, redirect, url_for, render_template, flash
 
 @app.route('/')
 @login_required
+@required_roles('reader')
 def taskplanner_home():
     return "Hello World!"
 
 @app.route("/admin/")
 @login_required
-@in_role('admin')
+@required_roles('admin')
 def adminview():
     return render_template("admin/admin.html")
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
