@@ -18,7 +18,7 @@ def adminview():
 
 @app.route("/add_role", methods=['GET', 'POST'])
 @login_required
-@in_role('admin')
+@required_roles('admin')
 def add_role():
     error = None
     form = RoleForm(request.form)
@@ -59,6 +59,7 @@ def login():
     return render_template('login.html', error=error, form=form)
 
 @app.route('/logout')
+@login_required
 def logout():
     session.pop('user', None)
     flash('You were logged out')
