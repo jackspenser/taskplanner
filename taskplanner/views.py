@@ -1,7 +1,7 @@
 from taskplanner import app
 from taskplanner.model import db, User, Task, Project, Role
 from taskplanner.helpers import login_required, required_roles
-from taskplanner.forms import LoginForm, RoleForm
+from taskplanner.forms import LoginForm, RoleForm, UserForm
 from flask import request, session, redirect, url_for, render_template, flash
 
 @app.route('/')
@@ -9,6 +9,28 @@ from flask import request, session, redirect, url_for, render_template, flash
 @required_roles('reader')
 def taskplanner_home():
     return "Hello World!"
+
+@app.route('/add_user', methods=['GET', 'POST'])
+@login_required
+@required_roles('admin')
+def add_user():
+    error = None
+    form = UserForm(request.form)
+    form.roles.choices = [(x.name, x.name) for x in Role.query.order_by('name')]
+    if form.validate_on_submit():
+        if User.query.filter_by(username=form.username.data).count() > 0:
+            error = "User already exists"
+        else:
+            user = User(form.username.data, form.password.data)
+            user.fname = form.fname.data
+            user.lname = form.lname.data
+            user.email = form.email.data
+            for role in form.roles.data:
+                theRole = Role.query.filter_by(name=role).one()
+                user.roles.append(theRole)            
+            raise Exception('Stop')
+    return render_template("admin/adduser.html", error=error, form=form)
+
 
 @app.route("/admin/")
 @login_required
