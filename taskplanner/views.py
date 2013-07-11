@@ -1,8 +1,8 @@
 from taskplanner import app
 from taskplanner.model import db, User, Task, Project, Role
 from taskplanner.helpers import login_required, required_roles
-from taskplanner.forms import LoginForm, RoleForm, UserForm
-from flask import request, session, redirect, url_for, render_template, flash
+from taskplanner.forms import LoginForm, RoleForm, UserForm, EditUserForm
+from flask import request, session, redirect, url_for, render_template, flash, abort
 
 @app.route('/')
 @login_required
@@ -15,7 +15,7 @@ def taskplanner_home():
 @required_roles('admin')
 def add_user():
     error = None
-    form = UserForm(request.form)
+    form = UserForm()
     form.roles.choices = [(x.name, x.name) for x in Role.query.order_by('name')]
     if form.validate_on_submit():
         if User.query.filter_by(username=form.username.data).count() > 0:
@@ -27,10 +27,57 @@ def add_user():
             user.email = form.email.data
             for role in form.roles.data:
                 theRole = Role.query.filter_by(name=role).one()
-                user.roles.append(theRole)            
-            raise Exception('Stop')
+                user.roles.append(theRole)
+            db.session.add(user)
+            db.session.commit()
+            msg = "{0} added".format(user.fullname)
+            flash(msg)
+            return redirect(url_for('users'))
     return render_template("admin/adduser.html", error=error, form=form)
 
+@app.route('/edit_user/<username>', methods=['GET', 'POST'])
+@login_required
+@required_roles('admin')
+def edit_user(username):
+    error = None
+    user = User.query.filter_by(username=username).first() or abort(404)
+    form = EditUserForm(obj=user)
+    form.roles.choices =  [(x.name, x.name) for x in Role.query.order_by('name')]
+    if request.method == 'GET':
+        form.roles.data = [x.name for x in user.roles]  
+    if form.validate_on_submit():
+        edited = False
+        if user.fname <> form.fname.data:
+            edited = True
+            user.fname = form.fname.data
+        if user.lname <> form.lname.data:
+            edited = True
+            user.lname = form.lname.data
+        if user.email <> form.email.data:
+            edited = True
+            user.email = form.email.data
+        uroles = [x.name for x in user.roles]
+        if uroles <> form.roles.data:
+            edited = True
+            user.roles = []
+            for role in form.roles.data:
+                theRole = Role.query.filter_by(name=role).one()
+                user.roles.append(theRole)
+        if edited:
+            db.session.commit()
+            msg = "{0} updated".format(user.fullname)
+            flash(msg)
+            return redirect(url_for('users'))
+        else:
+            flash("No data was updated")
+    return render_template("admin/edituser.html", error=error, username=username, form=form)
+
+@app.route('/users')
+@login_required
+@required_roles('admin')
+def users():
+    users = User.query.order_by('lname')
+    return render_template("admin/users.html", users=users)
 
 @app.route("/admin/")
 @login_required

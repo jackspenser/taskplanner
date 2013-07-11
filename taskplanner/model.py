@@ -45,6 +45,11 @@ class User(db.Model):
         else:
             return False
     
+    @property
+    def fullname(self):
+        return "{0} {1}".format(self.fname, self.lname)
+    
+    
     def __repr__(self):
         return '<User %r>' % self.username
     
