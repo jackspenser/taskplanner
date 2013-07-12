@@ -17,4 +17,5 @@
       <dd><input type="submit" value="Edit User" /></dd>
     </dl>
   </form>
+  <a href="{{ url_for('delete_user', username=username) }}">Delete User?</a>
 {% endblock %}

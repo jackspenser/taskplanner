@@ -1,7 +1,7 @@
 from taskplanner import app
 from taskplanner.model import db, User, Task, Project, Role
 from taskplanner.helpers import login_required, required_roles
-from taskplanner.forms import LoginForm, RoleForm, UserForm, EditUserForm
+from taskplanner.forms import LoginForm, RoleForm, UserForm, EditUserForm, DeleteUserForm
 from flask import request, session, redirect, url_for, render_template, flash, abort
 
 @app.route('/')
@@ -74,6 +74,23 @@ def edit_user(username):
         else:
             flash("No data was updated")
     return render_template("admin/edituser.html", error=error, username=username, form=form)
+
+@app.route('/delete_user/<username>', methods=['GET', 'POST'])
+@login_required
+@required_roles('admin')
+def delete_user(username):
+    form = DeleteUserForm()
+    user = User.query.filter_by(username=username).first() or abort(404)
+    if form.validate_on_submit():
+        if form.delete.data:
+            db.session.delete(user)
+            msg = "{0} deleted".format(user.fullname)
+            db.session.commit()
+        else:
+            msg = "{0} not deleted".format(user.fullname)
+        flash(msg)
+        return redirect(url_for('users'))
+    return render_template("admin/deleteuser.html", form=form, user=user)
 
 @app.route('/users')
 @login_required

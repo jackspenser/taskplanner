@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Delete User</h2>
+  <h3>Are you sure you want to delete user '{{ user.fullname }}'?</h3>
+  {% from "_formhelpers.html" import render_field %}
+  <form action="{{ url_for('delete_user', username=user.username) }}" method="post">
+    {{ form.hidden_tag() }}
+    <dl>
+      {{ render_field(form.delete) }}
+      {{ render_field(form.cancel) }}
+    </dl>
+  </form>
+{% endblock %}

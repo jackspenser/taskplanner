@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, PasswordField, SelectMultipleField, validators
+from wtforms import TextField, PasswordField, SelectMultipleField, validators, SubmitField
 
 class LoginForm(Form):
     username = TextField('Username', [validators.Required()])
@@ -20,3 +20,8 @@ class UserForm(Form):
 class EditUserForm(UserForm):
     password = PasswordField('Password', [validators.EqualTo('confirm')])
     username = TextField('Username')
+    
+class DeleteUserForm(Form):
+    delete = SubmitField("Delete")
+    cancel = SubmitField("Cancel")
+
