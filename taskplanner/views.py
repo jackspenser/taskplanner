@@ -63,6 +63,9 @@ def edit_user(username):
             for role in form.roles.data:
                 theRole = Role.query.filter_by(name=role).one()
                 user.roles.append(theRole)
+        if form.password.data:
+            edited = True
+            user.set_password(form.password.data)
         if edited:
             db.session.commit()
             msg = "{0} updated".format(user.fullname)

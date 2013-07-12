@@ -18,6 +18,5 @@ class UserForm(Form):
     roles = SelectMultipleField('Roles')
 
 class EditUserForm(UserForm):
-    current_password = PasswordField('Current Password')
     password = PasswordField('Password', [validators.EqualTo('confirm')])
     username = TextField('Username')
