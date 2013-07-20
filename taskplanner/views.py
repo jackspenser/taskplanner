@@ -30,6 +30,8 @@ def project_list():
     return render_template("projects.html", project_list=project_list)
 
 @app.route('/add_project', methods=['GET', 'POST'])
+@login_required
+@required_roles('editor')
 def add_project():
     error = None
     form = AddProjectForm()
@@ -40,7 +42,9 @@ def add_project():
         p.description = form.description.data
         p.client_id = form.client.data
         p.start_date = form.startdate.data
-        raise Exception('Stop')
+        db.session.add(p)
+        db.session.commit()
+        return redirect(url_for('project_list'))
     return render_template("addproject.html", error = error, form = form)
 
 @app.route('/add_client', methods=['GET', 'POST'])
@@ -49,6 +53,9 @@ def add_project():
 def add_client():
     error = None
     form = ClientForm()
+    theSource = request.args.get('source', None)
+    if theSource:
+        session['add_client_redirect'] = theSource
     if form.validate_on_submit():
         client = Client()
         client.name = form.name.data
@@ -58,6 +65,9 @@ def add_client():
         db.session.commit()
         msg = "{0} added as a client".format(client.name)
         flash(msg)
+        theRedir = session.pop('add_client_redirect', None)
+        if theRedir:
+            return redirect(url_for(theRedir))
         return redirect(url_for('project_list'))
     return render_template("addclient.html", error=error, form=form)
 
@@ -173,7 +183,6 @@ def add_role():
             flash("%s role added", role.name)
             return redirect(url_for('adminview'))
     return render_template("admin/addrole.html", roles = theRoles, form=form, error=error)
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
