@@ -67,7 +67,7 @@ class Role(db.Model):
 class Client(db.Model):
     __tablename__ = 'clients'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(100), unique=True)
     company = db.Column(db.String(100))
     projects = db.relationship('Project', backref='client',
