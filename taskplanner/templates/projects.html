@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Project List</h2>
+  {% if project_list %}
+  <ul>
+    {% for project in project_list %}
+    <li>{{ project.title }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No projects in system!</p>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Add Client</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  {% from "_formhelpers.html" import render_field %}
+  <form action="{{ url_for('add_client') }}" method="post">
+    {{ form.hidden_tag() }}
+    <dl>
+      {{ render_field(form.name) }}
+      {{ render_field(form.email) }}
+      {{ render_field(form.company) }}
+      <dd><input type="submit" value="Add Client" /></dd>
+    </dl>
+  </form>
+{% endblock %}

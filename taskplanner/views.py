@@ -1,14 +1,65 @@
 from taskplanner import app
-from taskplanner.model import db, User, Task, Project, Role
-from taskplanner.helpers import login_required, required_roles
-from taskplanner.forms import LoginForm, RoleForm, UserForm, EditUserForm, DeleteUserForm
-from flask import request, session, redirect, url_for, render_template, flash, abort
+from taskplanner.model import (db,
+                               User,
+                               Task,
+                               Project,
+                               Role,
+                               Client)
+from taskplanner.helpers import (login_required,
+                                 required_roles)
+from taskplanner.forms import (LoginForm,
+                               RoleForm,
+                               UserForm,
+                               EditUserForm,
+                               DeleteUserForm,
+                               ClientForm,
+                               AddProjectForm)
+from flask import (request,
+                   session,
+                   redirect,
+                   url_for,
+                   render_template,
+                   flash,
+                   abort)
 
 @app.route('/')
 @login_required
 @required_roles('reader')
-def taskplanner_home():
-    return "Hello World!"
+def project_list():
+    project_list = Project.query.all()
+    return render_template("projects.html", project_list=project_list)
+
+@app.route('/add_project', methods=['GET', 'POST'])
+def add_project():
+    error = None
+    form = AddProjectForm()
+    form.client.choices = [(x.id, x.name) for x in Client.query.order_by('name')]
+    if form.validate_on_submit():
+        p = Project()
+        p.title = form.title.data
+        p.description = form.description.data
+        p.client_id = form.client.data
+        p.start_date = form.startdate.data
+        raise Exception('Stop')
+    return render_template("addproject.html", error = error, form = form)
+
+@app.route('/add_client', methods=['GET', 'POST'])
+@login_required
+@required_roles('editor')
+def add_client():
+    error = None
+    form = ClientForm()
+    if form.validate_on_submit():
+        client = Client()
+        client.name = form.name.data
+        client.email = form.email.data
+        client.company = form.company.data
+        db.session.add(client)
+        db.session.commit()
+        msg = "{0} added as a client".format(client.name)
+        flash(msg)
+        return redirect(url_for('project_list'))
+    return render_template("addclient.html", error=error, form=form)
 
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
@@ -140,7 +191,7 @@ def login():
             if session.get('next'):
                 return redirect(session.pop('next'))
             else:
-                return redirect(url_for('taskplanner_home'))
+                return redirect(url_for('project_list'))
     else:
         # check for next url
         if request.args.get('next'):
