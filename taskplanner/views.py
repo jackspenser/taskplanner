@@ -42,6 +42,7 @@ def add_project():
         p.description = form.description.data
         p.client_id = form.client.data
         p.start_date = form.startdate.data
+        p.due_date = form.due_date.data
         db.session.add(p)
         db.session.commit()
         return redirect(url_for('project_list'))
