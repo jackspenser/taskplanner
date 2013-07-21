@@ -23,6 +23,7 @@ from flask import (request,
                    abort)
 
 @app.route('/')
+@app.route('/projects')
 @login_required
 @required_roles('reader')
 def project_list():
@@ -46,7 +47,21 @@ def add_project():
         db.session.add(p)
         db.session.commit()
         return redirect(url_for('project_list'))
-    return render_template("addproject.html", error = error, form = form)
+    return render_template("addproject.html", error=error, form=form)
+
+#@app.route('/edit_project/<int:project_id>')
+#@login_required
+#@required_roles('editor')
+#def edit_project(project_id):
+#    error = None
+#    theProj = Project.query.get_or_404(project_id)
+    
+@app.route('/project/<int:project_id>')
+@login_required
+@required_roles('reader')
+def project_view(project_id):
+    theProject = Project.query.get_or_404(project_id)
+    return render_template("project.html", theProject=theProject)
 
 @app.route('/add_client', methods=['GET', 'POST'])
 @login_required

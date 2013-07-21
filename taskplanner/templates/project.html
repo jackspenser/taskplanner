@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>{{ theProject.title }}</h2>
+  <dl>
+    <dt>Title</dt>
+    <dd>{{ theProject.title }}</dd>
+    <dt>Description</dt>
+    <dd>{{ theProject.description }}</dd>
+    <dt>Client</dt>
+    <dd>{{ theProject.client.name }}</dd>
+    <dt>Start Date</dt>
+    <dd>{{ theProject.start_date }}</dd>
+  </dl>
+
+<a href="{{ url_for('add_project') }}">Add Project</a>
+{% endblock %}
