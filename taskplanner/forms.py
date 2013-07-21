@@ -42,4 +42,4 @@ class AddProjectForm(Form):
     description = TextAreaField('Description', [validators.Required()])
     startdate = DateField('Start Date', [validators.Required()], format = '%m/%d/%Y')
     client = SelectField('Client', [validators.Required()], coerce=int)
-    due_date = DateField('Due Date', format = '%m/%d/%Y')
+    due_date = DateField('Due Date', [validators.Optional()],format = '%m/%d/%Y')
