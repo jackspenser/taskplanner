@@ -56,6 +56,13 @@ def add_project():
 #def edit_project(project_id):
 #    error = None
 #    theProj = Project.query.get_or_404(project_id)
+
+@app.route('/add_task/<int:project_id>')
+@login_required
+@required_roles('editor')
+def add_task(project_id):
+    pass
+
     
 @app.route('/project/<int:project_id>')
 @login_required
