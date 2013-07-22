@@ -4,6 +4,7 @@ from wtforms import (StringField,
                      PasswordField,
                      SelectField,
                      SelectMultipleField,
+                     IntegerField,
                      DateField,
                      validators,
                      SubmitField)
@@ -40,9 +41,12 @@ class ClientForm(Form):
 class AddProjectForm(Form):
     title = StringField('Title', [validators.Required()])
     description = TextAreaField('Description', [validators.Required()])
-    startdate = DateField('Start Date', [validators.Required()], format = '%m/%d/%Y')
+    start_date = DateField('Start Date', [validators.Required()], format = '%m/%d/%Y')
     client = SelectField('Client', [validators.Required()], coerce=int)
     due_date = DateField('Due Date', [validators.Optional()],format = '%m/%d/%Y')
-    
+
+class EditProjectForm(AddProjectForm):
+    percent_complete = IntegerField('Percent Complete')
+
 class AddTaskForm(Form):
     pass

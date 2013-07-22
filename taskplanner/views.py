@@ -13,7 +13,8 @@ from taskplanner.forms import (LoginForm,
                                EditUserForm,
                                DeleteUserForm,
                                ClientForm,
-                               AddProjectForm)
+                               AddProjectForm,
+                               EditProjectForm)
 from flask import (request,
                    session,
                    redirect,
@@ -42,7 +43,7 @@ def add_project():
         p.title = form.title.data
         p.description = form.description.data
         p.client_id = form.client.data
-        p.start_date = form.startdate.data
+        p.start_date = form.start_date.data
         if form.due_date.data:
             p.due_date = form.due_date.data
         db.session.add(p)
@@ -50,12 +51,28 @@ def add_project():
         return redirect(url_for('project_list'))
     return render_template("addproject.html", error=error, form=form)
 
-#@app.route('/edit_project/<int:project_id>')
-#@login_required
-#@required_roles('editor')
-#def edit_project(project_id):
-#    error = None
-#    theProj = Project.query.get_or_404(project_id)
+@app.route('/edit_project/<int:project_id>', methods=['GET', 'POST'])
+@login_required
+@required_roles('editor')
+def edit_project(project_id):
+    error = None
+    theProj = Project.query.get_or_404(project_id)
+    form = EditProjectForm(obj=theProj)
+    form.client.choices = [(x.id, x.name) for x in Client.query.order_by('name')]
+    if request.method == 'GET':
+        form.client.data = theProj.client_id
+    if form.validate_on_submit():
+        theProj.start_date = form.start_date.data
+        theProj.description = form.description.data
+        theProj.due_date = form.due_date.data
+        theProj.title = form.title.data
+        theProj.percent_complete = form.percent_complete.data
+        theProj.client_id = form.client.data
+        msg = "{0} updated!".format(theProj.title)
+        flash(msg)
+        db.session.commit()
+        return redirect(url_for('project_view', project_id=theProj.id))
+    return render_template("editproject.html", form=form, theProj=theProj)
 
 @app.route('/add_task/<int:project_id>')
 @login_required
@@ -63,7 +80,6 @@ def add_project():
 def add_task(project_id):
     pass
 
-    
 @app.route('/project/<int:project_id>')
 @login_required
 @required_roles('reader')

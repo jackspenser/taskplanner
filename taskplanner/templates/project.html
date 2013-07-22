@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>{{ theProject.title }}</h2>
+  <h2>{{ theProject.title }} <a href="{{ url_for('edit_project', project_id=theProject.id) }}">(Edit)</a></h2>
   <dl>
     <dt>Title</dt>
     <dd>{{ theProject.title }}</dd>
@@ -9,9 +9,9 @@
     <dt>Client</dt>
     <dd>{{ theProject.client.name }}</dd>
     <dt>Start Date</dt>
-    <dd>{{ theProject.start_date }}</dd>
+    <dd>{{ theProject.start_date.strftime("%m/%d/%Y") }}</dd>
     <dt>Due Date</dt>
-    <dd>{{ theProject.due_date }}</dd>
+    <dd>{% if theProject.due_date %}{{ theProject.due_date.strftime("%m/%d/%Y") }}{% endif %}</dd>
     <dt>Percent Complete</dt>
     <dd>{{ theProject.percent_complete }}</dd>
     <dt>Project Tasks</dt>
