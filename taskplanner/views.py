@@ -96,6 +96,9 @@ def add_client():
     theSource = request.args.get('source', None)
     if theSource:
         session['add_client_redirect'] = theSource
+    theProject = request.args.get('project_id', None)
+    if theProject:
+        session['add_client_project_id'] = theProject
     if form.validate_on_submit():
         client = Client()
         client.name = form.name.data
@@ -106,8 +109,10 @@ def add_client():
         msg = "{0} added as a client".format(client.name)
         flash(msg)
         theRedir = session.pop('add_client_redirect', None)
-        if theRedir:
+        if theRedir == 'add_project':
             return redirect(url_for(theRedir))
+        elif theRedir == 'edit_project':
+            return redirect(url_for(theRedir, project_id=session.pop('add_client_project_id')))
         return redirect(url_for('project_list'))
     return render_template("addclient.html", error=error, form=form)
 

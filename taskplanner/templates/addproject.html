@@ -9,8 +9,8 @@
       {{ render_field(form.title) }}
       {{ render_field(form.description) }}
       {{ render_field(form.client) }} <a href="{{ url_for('add_client', source='add_project') }}">Add Client</a>
-      {{ render_field(form.startdate) }}
-      {{ render_field(form.due_date) }}
+      {{ render_field(form.start_date, format = '%m/%d/%Y') }}
+      {{ render_field(form.due_date, format = '%m/%d/%Y') }}
       <dd><input type="submit" value="Add Project" /></dd>
     </dl>
   </form>
