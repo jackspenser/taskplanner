@@ -6,7 +6,8 @@ from taskplanner.model import (db,
                                Role,
                                Client)
 from taskplanner.helpers import (login_required,
-                                 required_roles)
+                                 required_roles,
+                                 get_client_select_group)
 from taskplanner.forms import (LoginForm,
                                RoleForm,
                                UserForm,
@@ -37,7 +38,7 @@ def project_list():
 def add_project():
     error = None
     form = AddProjectForm()
-    form.client.choices = [(x.id, x.name) for x in Client.query.order_by('name')]
+    form.client.choices = get_client_select_group()
     if form.validate_on_submit():
         p = Project()
         p.title = form.title.data
@@ -58,7 +59,7 @@ def edit_project(project_id):
     error = None
     theProj = Project.query.get_or_404(project_id)
     form = EditProjectForm(obj=theProj)
-    form.client.choices = [(x.id, x.name) for x in Client.query.order_by('name')]
+    form.client.choices = get_client_select_group()
     if request.method == 'GET':
         form.client.data = theProj.client_id
     if form.validate_on_submit():
@@ -100,20 +101,23 @@ def add_client():
     if theProject:
         session['add_client_project_id'] = theProject
     if form.validate_on_submit():
-        client = Client()
-        client.name = form.name.data
-        client.email = form.email.data
-        client.company = form.company.data
-        db.session.add(client)
-        db.session.commit()
-        msg = "{0} added as a client".format(client.name)
-        flash(msg)
-        theRedir = session.pop('add_client_redirect', None)
-        if theRedir == 'add_project':
-            return redirect(url_for(theRedir))
-        elif theRedir == 'edit_project':
-            return redirect(url_for(theRedir, project_id=session.pop('add_client_project_id')))
-        return redirect(url_for('project_list'))
+        if Client.query.filter_by(email=form.email.data).count() > 0:
+            error = "That client already exists"
+        else:
+            client = Client()
+            client.name = form.name.data
+            client.email = form.email.data
+            client.company = form.company.data
+            db.session.add(client)
+            db.session.commit()
+            msg = "{0} added as a client".format(client.name)
+            flash(msg)
+            theRedir = session.pop('add_client_redirect', None)
+            if theRedir == 'add_project':
+                return redirect(url_for(theRedir))
+            elif theRedir == 'edit_project':
+                return redirect(url_for(theRedir, project_id=session.pop('add_client_project_id')))
+            return redirect(url_for('project_list'))
     return render_template("addclient.html", error=error, form=form)
 
 @app.route('/add_user', methods=['GET', 'POST'])

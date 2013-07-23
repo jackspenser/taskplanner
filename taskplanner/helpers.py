@@ -1,5 +1,5 @@
 from taskplanner import app
-from taskplanner.model import db, User
+from taskplanner.model import db, User, Client
 from flask import request, session, redirect, url_for, abort
 from functools import wraps
 
@@ -28,4 +28,10 @@ def required_roles(*roles):
             return f(*args, **kwargs)
         return wrapped
     return wrapper
-    
+
+def get_client_select_group():
+    theClientList = []
+    for client in Client.query.order_by('name'):
+        nameStr = "{0} ({1})".format(client.name, client.email)
+        theClientList.append((client.id, nameStr))
+    return theClientList
