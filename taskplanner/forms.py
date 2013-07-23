@@ -8,6 +8,7 @@ from wtforms import (StringField,
                      DateField,
                      validators,
                      SubmitField)
+import datetime
 
 class LoginForm(Form):
     username = StringField('Username', [validators.Required()])
@@ -41,7 +42,7 @@ class ClientForm(Form):
 class AddProjectForm(Form):
     title = StringField('Title', [validators.Required()])
     description = TextAreaField('Description', [validators.Required()])
-    start_date = DateField('Start Date', [validators.Required()], format = '%m/%d/%Y')
+    start_date = DateField('Start Date', [validators.Required()], format = '%m/%d/%Y', default=datetime.date.today())
     client = SelectField('Client', [validators.Required()], coerce=int)
     due_date = DateField('Due Date', [validators.Optional()],format = '%m/%d/%Y')
 
@@ -49,4 +50,10 @@ class EditProjectForm(AddProjectForm):
     percent_complete = IntegerField('Percent Complete')
 
 class AddTaskForm(Form):
-    pass
+    title = StringField('Title', [validators.Required()])
+    description = TextAreaField('Description', [validators.Optional()])
+    project = SelectField('Project', [validators.Required()], coerce=int)
+    owner = SelectField('Task Owner', [validators.Required()], coerce=int)
+    start_date = DateField('Start Date', [validators.Required()], format='%m/%d/%Y', default=datetime.date.today())
+    percent_complete = IntegerField('Percent Complete', [validators.Optional()])
+    due_date = DateField('Due Date', [validators.Optional()])

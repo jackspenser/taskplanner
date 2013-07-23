@@ -20,5 +20,5 @@
     {% endfor %}
   </dl>
 
-<a href="{{ url_for('add_project') }}">Add Project</a>
+<a href="{{ url_for('add_project') }}">Add Project</a> | <a href="{{ url_for('add_task', project_id=theProject.id) }}">Add Task</a>
 {% endblock %}

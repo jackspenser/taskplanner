@@ -15,7 +15,8 @@ from taskplanner.forms import (LoginForm,
                                DeleteUserForm,
                                ClientForm,
                                AddProjectForm,
-                               EditProjectForm)
+                               EditProjectForm,
+                               AddTaskForm)
 from flask import (request,
                    session,
                    redirect,
@@ -75,11 +76,30 @@ def edit_project(project_id):
         return redirect(url_for('project_view', project_id=theProj.id))
     return render_template("editproject.html", form=form, theProj=theProj)
 
-@app.route('/add_task/<int:project_id>')
+@app.route('/add_task', methods=['GET', 'POST'])
 @login_required
 @required_roles('editor')
-def add_task(project_id):
-    pass
+def add_task():
+    error = None
+    form = AddTaskForm()
+    form.project.choices = [(x.id, x.title) for x in Project.query.order_by('title')]
+    form.owner.choices = [(x.id, x.fullname) for x in User.query.order_by('lname')]
+    if request.method == 'GET' and request.args.get('project_id'):
+        Project.query.get_or_404(request.args.get('project_id'))
+        form.project.data = int(request.args.get('project_id'))
+    if form.validate_on_submit():
+        theTask = Task()
+        theTask.project_id = form.project.data
+        theTask.title = form.title.data
+        theTask.description = form.description.data
+        theTask.owner = User.query.get_or_404(form.owner.data)
+        theTask.start_date = form.start_date.data
+        theTask.percent_complete = form.percent_complete.data
+        theTask.due_date = form.due_date.data
+        db.session.add(theTask)
+        db.session.commit()
+        return redirect(url_for('project_view', project_id=theTask.project_id))
+    return render_template("addtask.html", error=error, form=form)
 
 @app.route('/project/<int:project_id>')
 @login_required

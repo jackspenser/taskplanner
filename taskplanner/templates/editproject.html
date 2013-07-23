@@ -21,4 +21,5 @@
       <li>{{ task.title }}</li>
     {% endfor %}
   </ul>
+  <a href="{{ url_for('add_task', project_id=theProj.id) }}">Add Task</a>
 {% endblock %}
