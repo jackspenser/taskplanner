@@ -2,6 +2,7 @@ from taskplanner import app
 from taskplanner.model import (db,
                                User,
                                Task,
+                               TaskNote,
                                Project,
                                Role,
                                Client)
@@ -16,6 +17,7 @@ from taskplanner.forms import (LoginForm,
                                ClientForm,
                                AddProjectForm,
                                EditProjectForm,
+                               EditTaskForm,
                                AddTaskForm)
 from flask import (request,
                    session,
@@ -100,6 +102,41 @@ def add_task():
         db.session.commit()
         return redirect(url_for('project_view', project_id=theTask.project_id))
     return render_template("addtask.html", error=error, form=form)
+
+@app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
+@login_required
+@required_roles('editor')
+def edit_task(task_id):
+    error = None
+    theTask = Task.query.get_or_404(task_id)
+    form = EditTaskForm(obj=theTask)
+    form.project.choices = [(x.id, x.title) for x in Project.query.order_by('title')]
+    form.owner.choices = [(x.id, x.fullname) for x in User.query.order_by('lname')]
+    if request.method == 'GET':
+        form.project.data = theTask.project_id
+        form.owner.data = theTask.owner_id
+    if form.validate_on_submit():
+        theTask.project_id = form.project.data
+        theTask.title = form.title.data
+        theTask.description = form.description.data
+        theTask.owner = User.query.get_or_404(form.owner.data)
+        theTask.start_date = form.start_date.data
+        theTask.percent_complete = form.percent_complete.data
+        theTask.due_date = form.due_date.data
+        if form.task_note.data:
+            tn = TaskNote()
+            tn.description = form.task_note.data
+            theTask.notes.append(tn)
+        db.session.commit()
+        return redirect(url_for('project_view', project_id=theTask.project_id))
+    return render_template("edittask.html", error=error, theTask=theTask, form=form)
+
+@app.route('/task_view/<int:task_id>')
+@login_required
+@required_roles('reader')
+def task_view(task_id):
+    theTask = Task.query.get_or_404(task_id)
+    return render_template("taskview.html", theTask=theTask)
 
 @app.route('/project/<int:project_id>')
 @login_required

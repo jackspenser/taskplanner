@@ -102,7 +102,7 @@ class Task(db.Model):
     due_date = db.Column(db.Date)
     percent_complete = db.Column(db.Integer)
     complete_date = db.Column(db.Date)
-    notes = db.relationship('TaskNote', backref='task', lazy='dynamic')
+    notes = db.relationship('TaskNote', backref='task', lazy='dynamic', order_by='TaskNote.created.desc()')
     
     def __repr__(self):
         return "<Task %r>" % self.title
@@ -124,7 +124,3 @@ def initialize_db():
     j.roles.append(admin)
     db.session.add(j)
     db.session.commit()
-
-    
-
-

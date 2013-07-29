@@ -16,7 +16,8 @@
     <dd>{{ theProject.percent_complete }}</dd>
     <dt>Project Tasks</dt>
     {% for task in theProject.tasks %}
-      <dd>{{ task.title }}</dd>
+      <dd>{{ task.title }} - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a>
+        <a href="{{ url_for('task_view', task_id=task.id) }}">View</a></dd>
     {% endfor %}
   </dl>
 
