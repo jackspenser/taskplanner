@@ -111,7 +111,7 @@ class TaskNote(db.Model):
     __tablename__ = 'tasknotes'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text)
-    created = db.Column(db.DateTime, default=datetime.datetime.now())
+    created = db.Column(db.DateTime, default=datetime.datetime.now)
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
 
 def initialize_db():
