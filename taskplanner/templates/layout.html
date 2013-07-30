@@ -5,17 +5,20 @@
         {% block stylesheets %}
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
         {% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/flashfade.js') }}"></script>
+        {% endblock %}
         <title>{% block title %}Taskplanner{% endblock %}</title>
     </head>
     <body>
         <div id="main">
             <div class="loggedin">
-            {% if not session.user %}
-            <a href="{{ url_for('login') }}">log in</a>
-            {% else %}
-              <a href="{{ url_for('logout') }}">log out</a>
-            {% endif %}
+                {% if not session.user %}
+                <a href="{{ url_for('login') }}">log in</a>
+                {% else %}
+                  <a href="{{ url_for('logout') }}">log out</a>
+                {% endif %}
             </div>
             {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
