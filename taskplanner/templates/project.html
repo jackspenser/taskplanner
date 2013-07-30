@@ -14,12 +14,21 @@
     <dd>{% if theProject.due_date %}{{ theProject.due_date.strftime("%m/%d/%Y") }}{% endif %}</dd>
     <dt>Percent Complete</dt>
     <dd>{{ theProject.percent_complete }}%</dd>
-    <dt>Project Tasks</dt>
-    {% for task in theProject.tasks %}
-      <dd>{{ task.title }} - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a>
-        <a href="{{ url_for('task_view', task_id=task.id) }}">View</a></dd>
-    {% endfor %}
   </dl>
+  Project Tasks:
+  <ul>
+    {% for task in theProject.tasks %}
+      <li>{{ task.title }} - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a>
+        <a href="{{ url_for('task_view', task_id=task.id) }}">View</a></li>
+        {% if task.notes.count() > 0 %}
+            <ul>
+                {% for tn in task.notes %}
+                <li>{{ tn.description }}</li>
+                {% endfor %}
+            </ul>   
+        {% endif %}
+    {% endfor %}
+  </ul>
   <a href="{{ url_for('add_task', project_id=theProject.id) }}">Add Task</a> | 
   <a href="{{ url_for('delete_project', project_id=theProject.id) }}">Delete Project</a>
 {% endblock body %}
