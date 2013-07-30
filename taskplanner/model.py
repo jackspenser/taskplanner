@@ -86,7 +86,7 @@ class Project(db.Model):
     due_date = db.Column(db.Date)
     percent_complete = db.Column(db.Integer)
     complete_date = db.Column(db.Date)
-    tasks = db.relationship('Task', backref='project', lazy='dynamic')
+    tasks = db.relationship('Task', cascade="all,delete", backref='project', lazy='dynamic')
     
     def __repr__(self, ):
         return "<Project %r - %r>" % (self.title, self.client.name)
@@ -102,7 +102,7 @@ class Task(db.Model):
     due_date = db.Column(db.Date)
     percent_complete = db.Column(db.Integer)
     complete_date = db.Column(db.Date)
-    notes = db.relationship('TaskNote', backref='task', lazy='dynamic', order_by='TaskNote.created.desc()')
+    notes = db.relationship('TaskNote', cascade="all,delete", backref='task', lazy='dynamic', order_by='TaskNote.created.desc()')
     
     def __repr__(self):
         return "<Task %r>" % self.title

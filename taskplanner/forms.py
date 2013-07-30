@@ -49,6 +49,9 @@ class AddProjectForm(Form):
 class EditProjectForm(AddProjectForm):
     percent_complete = IntegerField('Percent Complete')
 
+class DeleteProjectForm(DeleteUserForm):
+    pass
+
 class AddTaskForm(Form):
     title = StringField('Title', [validators.Required()])
     description = TextAreaField('Description', [validators.Optional()])

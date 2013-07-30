@@ -18,7 +18,8 @@ from taskplanner.forms import (LoginForm,
                                AddProjectForm,
                                EditProjectForm,
                                EditTaskForm,
-                               AddTaskForm)
+                               AddTaskForm,
+                               DeleteProjectForm)
 from flask import (request,
                    session,
                    redirect,
@@ -77,6 +78,24 @@ def edit_project(project_id):
         db.session.commit()
         return redirect(url_for('project_view', project_id=theProj.id))
     return render_template("editproject.html", form=form, theProj=theProj)
+
+@app.route('/delete_project/<int:project_id>', methods=['GET', 'POST'])
+@login_required
+@required_roles('editor')
+def delete_project(project_id):
+    theProj = Project.query.get_or_404(project_id)
+    form = DeleteProjectForm()
+    if form.validate_on_submit():
+        if form.delete.data:
+            db.session.delete(theProj)
+            msg = "{0} deleted".format(theProj.title)
+            flash(msg)
+            db.session.commit()
+            return redirect(url_for('project_list'))
+        else:
+            msg = "{0} not delted".format(theProj.title)
+            return redirect(url_for('project_view', project_id=theProj.id))
+    return render_template("deleteproject.html", form=form, theProj = theProj)
 
 @app.route('/add_task', methods=['GET', 'POST'])
 @login_required
