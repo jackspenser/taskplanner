@@ -10,5 +10,8 @@
   {% else %}
   <p>No projects in system!</p>
   {% endif %}
+{% endblock body %}
+{% block footer %}
+{{ super() }} |
 <a href="{{ url_for('add_project') }}">Add Project</a>
-{% endblock %}
+{% endblock footer %}

@@ -2,7 +2,9 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+        {% endblock %}
         {% block javascripts %}{% endblock %}
         <title>{% block title %}Taskplanner{% endblock %}</title>
     </head>
@@ -21,8 +23,13 @@
             {% if session.user %}
             <br />
             {% endif %}
-            {% block body %}{% endblock %}
+            {% block body %}{% endblock body%}
+            <div id="footer">
+                {% block footer %}
+                {% if session.admin %}<a href="{{ url_for('adminview') }}">Admin</a> | {% endif %}<a href="{{ url_for('project_list') }}">Projects</a>
+                {% endblock footer %}
             </div>
-        </div>      
+           
+        </div>
     </body>
 </html>

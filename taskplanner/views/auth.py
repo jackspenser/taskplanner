@@ -24,6 +24,10 @@ def login():
             error = 'Invalid password'
         else:
             session['user'] = theUser.username
+            if theUser.has_role('admin'):
+                  session['admin'] = True
+            else:
+                  session['admin'] = False
             flash('You were logged in')
             if session.get('next'):
                 return redirect(session.pop('next'))
@@ -39,5 +43,6 @@ def login():
 @login_required
 def logout():
     session.pop('user', None)
+    session.pop('admin', None)
     flash('You were logged out')
     return redirect(url_for('login'))

@@ -17,5 +17,7 @@
       <dd><input type="submit" value="Add User" /></dd>
     </dl>
   </form>
-  <a href={{ url_for('users') }}>Users</a>
-{% endblock %}
+{% endblock body %}
+{% block footer %}
+{{ super() }} | <a href={{ url_for('users') }}>Users</a>
+{% endblock footer %}

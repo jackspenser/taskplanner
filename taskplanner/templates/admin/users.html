@@ -6,5 +6,7 @@
     <li><a href="{{ url_for('edit_user', username=user.username) }}">{{ user.fullname }}</a></li>
     {% endfor %}
 </ul>
-<a href="{{ url_for('add_user')}}">Add User</a>
-{% endblock %}
+{% endblock body %}
+{% block footer %}
+{{ super() }} | <a href="{{ url_for('add_user')}}">Add User</a>
+{% endblock footer %}
