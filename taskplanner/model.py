@@ -87,6 +87,14 @@ class Project(db.Model):
     percent_complete = db.Column(db.Integer)
     complete_date = db.Column(db.Date)
     tasks = db.relationship('Task', cascade="all,delete", backref='project', lazy='dynamic')
+
+    @property
+    def open_tasks(self):
+        return self.tasks.filter_by(complete_date=None).order_by(Task.start_date)
+
+    @property
+    def closed_tasks(self):
+        return self.tasks.filter(Task.complete_date != None).order_by(Task.start_date)
     
     def __repr__(self, ):
         return "<Project %r - %r>" % (self.title, self.client.name)

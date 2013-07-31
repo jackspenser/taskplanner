@@ -17,7 +17,7 @@
   </form>
   Project Tasks:
   <ul>
-    {% for task in theProj.tasks %}
+    {% for task in theProj.open_tasks %}
       <li>{{ task.title }}</li>
     {% endfor %}
   </ul>

@@ -27,6 +27,7 @@ from flask import (request,
                    render_template,
                    flash,
                    abort)
+import datetime
 
 @app.route('/')
 @app.route('/projects')
@@ -141,6 +142,10 @@ def edit_task(task_id):
         theTask.owner = User.query.get_or_404(form.owner.data)
         theTask.start_date = form.start_date.data
         theTask.percent_complete = form.percent_complete.data
+        if theTask.percent_complete == 100:
+            theTask.complete_date = datetime.date.today()
+        else:
+            theTask.complete_date = None
         theTask.due_date = form.due_date.data
         if form.task_note.data:
             tn = TaskNote()

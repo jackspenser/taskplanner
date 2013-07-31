@@ -47,7 +47,7 @@ class AddProjectForm(Form):
     due_date = DateField('Due Date', [validators.Optional()],format = '%m/%d/%Y')
 
 class EditProjectForm(AddProjectForm):
-    percent_complete = IntegerField('Percent Complete')
+    percent_complete = IntegerField('Percent Complete', [validators.Optional()])
 
 class DeleteProjectForm(DeleteUserForm):
     pass
