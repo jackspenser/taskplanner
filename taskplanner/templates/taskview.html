@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h1>Project: {{ theTask.project.title }} (<a href="{{ url_for('edit_task', task_id=theTask.id) }}">Edit</a>)</h1>
-  <h2>Task View: {{ theTask.title }}</h2>
+  <h2>Project: {{ theTask.project.title }}</h2>
+  <h2>Task View: {{ theTask.title }} (<a href="{{ url_for('edit_task', task_id=theTask.id) }}">Edit</a>)</h2>
   <h3>Owner: {{ theTask.owner.fullname }}</h3>
   <h4>Start: {{ theTask.start_date.strftime('%m/%d/%Y') }} {% if theTask.due_date %}Due: {{ theTask.due_date.strftime('%m/%d/%Y') }}{% endif %}</h4>
   {% if theTask.percent_complete %}<h4>Percent Complete: {{ theTask.percent_complete }}%{% endif %}</h4>
   {% if theTask.complete_date %}<h4>Complete Date: {{ theTask.complete_date.strftime('%m/%d/%Y') }}%{% endif %}</h4>
   <label for="description">Description: </label>
-  <p id="description">{{ theTask.description }}</p>
+  <p id="description"><pre width="90%">{{ theTask.description }}</pre></p>
   {% if theTask.notes.count() > 0 %}
   Task Notes:
   <ul>

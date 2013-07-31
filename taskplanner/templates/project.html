@@ -10,10 +10,14 @@
     <dd>{{ theProject.client.name }}</dd>
     <dt>Start Date</dt>
     <dd>{{ theProject.start_date.strftime("%m/%d/%Y") }}</dd>
+    {% if theProject.due_date %}
     <dt>Due Date</dt>
-    <dd>{% if theProject.due_date %}{{ theProject.due_date.strftime("%m/%d/%Y") }}{% endif %}</dd>
+    <dd>{{ theProject.due_date.strftime("%m/%d/%Y") }}</dd>
+    {% endif %}
+    {% if theProject.percent_complete %}
     <dt>Percent Complete</dt>
     <dd>{{ theProject.percent_complete }}%</dd>
+    {% endif %}
   </dl>
   Project Tasks:
   <ul>
