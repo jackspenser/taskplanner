@@ -21,6 +21,9 @@ body{
     padding: 0.3em;
     margin-bottom: 1em;  
 }
+.complete{
+    text-decoration: line-through;
+}
 a:link {color: #000000}      /* unvisited link */
 a:visited {color: #000000}  /* visited link */
 a:hover {color: #ff0000}  /* mouse over link */

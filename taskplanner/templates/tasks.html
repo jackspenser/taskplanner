@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Tasks</h2>
+  <ul>
+  {% for task in tasks %}
+    <li {% if task.complete_date %}class='complete'{% endif %}>{{ task.title }} - {{ task.owner.fullname }} - {{ task.project.title }}</li>
+  {% endfor %}
+  </ul>
+
+{% endblock %}

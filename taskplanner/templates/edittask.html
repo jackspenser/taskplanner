@@ -7,13 +7,13 @@
     {{ form.hidden_tag() }}
     <dl>
       {{ render_field(form.title) }}
-      {{ render_field(form.description, rows=15, cols=80) }}
+      {{ render_field(form.description, rows=5, cols=80) }}
       {{ render_field(form.project) }}
       {{ render_field(form.owner) }}
       {{ render_field(form.start_date, format = '%m/%d/%Y') }}
       {{ render_field(form.percent_complete) }}
       {{ render_field(form.due_date, format = '%m/%d/%Y') }}
-      {{ render_field(form.task_note, rows=4, cols=80) }}
+      {{ render_field(form.task_note, rows=3, cols=80) }}
       <dd><input type="submit" value="Edit Task" /></dd>
     </dl>
   </form>

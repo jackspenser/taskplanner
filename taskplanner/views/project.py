@@ -162,6 +162,17 @@ def task_view(task_id):
     theTask = Task.query.get_or_404(task_id)
     return render_template("taskview.html", theTask=theTask)
 
+@app.route('/tasks')
+@login_required
+@required_roles('reader')
+def tasks():
+    if request.args.get('active', None):
+        flash("active only")
+        tasks = Task.query.filter(Task.complete_date == None).order_by(Task.start_date)
+    else:
+        tasks = Task.query.order_by(Task.start_date)
+    return render_template("tasks.html", tasks=tasks)
+
 @app.route('/project/<int:project_id>')
 @login_required
 @required_roles('reader')

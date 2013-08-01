@@ -22,8 +22,7 @@
   Active Project Tasks:
   <ul>
     {% for task in theProject.open_tasks %}
-      <li>{{ task.title }} - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a>
-        <a href="{{ url_for('task_view', task_id=task.id) }}">View</a></li>
+      <li><a href="{{ url_for('task_view', task_id=task.id) }}">{{ task.title }}</a> - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a></li>
         {% if task.notes.count() > 0 %}
             <ul>
                 {% for tn in task.notes %}
@@ -36,8 +35,7 @@
   Complete Project Tasks:
   <ul>
     {% for task in theProject.closed_tasks %}
-      <li>{{ task.title }} - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a>
-        <a href="{{ url_for('task_view', task_id=task.id) }}">View</a></li>
+      <li><a href="{{ url_for('task_view', task_id=task.id) }}">{{ task.title }}</a> - {{ task.owner.fullname }}{% if task.percent_complete %} - {{ task.percent_complete }}%{% endif %} <a href="{{ url_for('edit_task', task_id=task.id ) }}">Edit</a></li>
     {% endfor %}
   </ul>  
   <a href="{{ url_for('add_task', project_id=theProject.id) }}">Add Task</a> | 
