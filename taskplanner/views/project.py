@@ -166,11 +166,13 @@ def task_view(task_id):
 @login_required
 @required_roles('reader')
 def tasks():
+    pageStr = request.args.get('page', '1')
+    page = int(pageStr)
     if request.args.get('active', None):
         flash("active only")
-        tasks = Task.query.filter(Task.complete_date == None).order_by(Task.start_date)
+        tasks = Task.query.filter(Task.complete_date == None).order_by(Task.start_date).paginate(page, 20)
     else:
-        tasks = Task.query.order_by(Task.start_date)
+        tasks = Task.query.order_by(Task.start_date).paginate(page, 20)
     return render_template("tasks.html", tasks=tasks)
 
 @app.route('/project/<int:project_id>')

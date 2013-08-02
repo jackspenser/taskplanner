@@ -28,10 +28,9 @@
             {% block body %}{% endblock body%}
             <div id="footer">
                 {% block footer %}
-                {% if session.admin %}<a href="{{ url_for('adminview') }}">Admin</a> | {% endif %}<a href="{{ url_for('project_list') }}">Projects</a>
+                {% if session.admin %}<a href="{{ url_for('adminview') }}">Admin</a> | {% endif %}<a href="{{ url_for('project_list') }}">Projects</a> | <a href="{{ url_for('tasks') }}">Tasks</a>
                 {% endblock footer %}
             </div>
-           
         </div>
     </body>
 </html>

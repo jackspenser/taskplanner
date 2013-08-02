@@ -4,6 +4,15 @@ body{
     color: #000000;
     background-color: #FFFFFF;
 }
+table{
+    border-collapse:collapse;
+}
+table,th, td{
+    border: 1px solid black;
+}
+td{
+    padding: 3px;
+}
 #main{
     margin-top: 20px;
     margin-right: 20px;
