@@ -58,7 +58,7 @@ class AddTaskForm(Form):
     project = SelectField('Project', [validators.Required()], coerce=int)
     owner = SelectField('Task Owner', [validators.Required()], coerce=int)
     start_date = DateField('Start Date', [validators.Required()], format='%m/%d/%Y', default=datetime.date.today())
-    percent_complete = IntegerField('Percent Complete', [validators.Optional()])
+    percent_complete = IntegerField('Percent Complete', [validators.Optional(), validators.NumberRange(min=0, max=100)])
     due_date = DateField('Due Date', [validators.Optional()], format='%m/%d/%Y')
 	
 class EditTaskForm(AddTaskForm):
