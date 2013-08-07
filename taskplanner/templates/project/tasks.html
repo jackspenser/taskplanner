@@ -20,5 +20,6 @@
   	</tr>
   	{% endfor %}
   </table>
+  <a href="{{ url_for('add_task') }}">Add Task</a>
   {{ render_pagination(tasks, 'tasks') }}
 {% endblock body %}
