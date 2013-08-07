@@ -35,7 +35,7 @@ import datetime
 @required_roles('reader')
 def project_list():
     project_list = Project.query.all()
-    return render_template("projects.html", project_list=project_list)
+    return render_template("project/projects.html", project_list=project_list)
 
 @app.route('/add_project', methods=['GET', 'POST'])
 @login_required
@@ -55,7 +55,7 @@ def add_project():
         db.session.add(p)
         db.session.commit()
         return redirect(url_for('project_list'))
-    return render_template("addproject.html", error=error, form=form)
+    return render_template("project/addproject.html", error=error, form=form)
 
 @app.route('/edit_project/<int:project_id>', methods=['GET', 'POST'])
 @login_required
@@ -78,7 +78,7 @@ def edit_project(project_id):
         flash(msg)
         db.session.commit()
         return redirect(url_for('project_view', project_id=theProj.id))
-    return render_template("editproject.html", form=form, theProj=theProj)
+    return render_template("project/editproject.html", form=form, theProj=theProj)
 
 @app.route('/delete_project/<int:project_id>', methods=['GET', 'POST'])
 @login_required
@@ -96,7 +96,7 @@ def delete_project(project_id):
         else:
             msg = "{0} not delted".format(theProj.title)
             return redirect(url_for('project_view', project_id=theProj.id))
-    return render_template("deleteproject.html", form=form, theProj = theProj)
+    return render_template("project/deleteproject.html", form=form, theProj = theProj)
 
 @app.route('/add_task', methods=['GET', 'POST'])
 @login_required
@@ -121,7 +121,7 @@ def add_task():
         db.session.add(theTask)
         db.session.commit()
         return redirect(url_for('project_view', project_id=theTask.project_id))
-    return render_template("addtask.html", error=error, form=form)
+    return render_template("project/addtask.html", error=error, form=form)
 
 @app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
@@ -153,14 +153,14 @@ def edit_task(task_id):
             theTask.notes.append(tn)
         db.session.commit()
         return redirect(url_for('project_view', project_id=theTask.project_id))
-    return render_template("edittask.html", error=error, theTask=theTask, form=form)
+    return render_template("project/edittask.html", error=error, theTask=theTask, form=form)
 
 @app.route('/task_view/<int:task_id>')
 @login_required
 @required_roles('reader')
 def task_view(task_id):
     theTask = Task.query.get_or_404(task_id)
-    return render_template("taskview.html", theTask=theTask)
+    return render_template("project/taskview.html", theTask=theTask)
 
 @app.route('/tasks')
 @login_required
@@ -169,7 +169,7 @@ def tasks():
     pageStr = request.args.get('page', '1')
     page = int(pageStr)
     tasks = Task.query.order_by(Task.start_date).paginate(page, 20)
-    return render_template("tasks.html", tasks=tasks)
+    return render_template("project/tasks.html", tasks=tasks)
 
 # @app.route('/active_tasks')
 # @login_required
@@ -178,14 +178,14 @@ def tasks():
 #     pageStr = request.args.get('page', '1')
 #     page = int(pageStr)
 #     tasks = Task.query.filter(Task.complete_date == None).order_by(Task.start_date).paginate(page, 2)
-#     return render_template("activetasks.html", tasks=tasks)
+#     return render_template("project/activetasks.html", tasks=tasks)
 
 @app.route('/project/<int:project_id>')
 @login_required
 @required_roles('reader')
 def project_view(project_id):
     theProject = Project.query.get_or_404(project_id)
-    return render_template("project.html", theProject=theProject)
+    return render_template("project/project.html", theProject=theProject)
 
 @app.route('/add_client', methods=['GET', 'POST'])
 @login_required
@@ -217,4 +217,4 @@ def add_client():
             elif theRedir == 'edit_project':
                 return redirect(url_for(theRedir, project_id=session.pop('add_client_project_id')))
             return redirect(url_for('project_list'))
-    return render_template("addclient.html", error=error, form=form)
+    return render_template("project/addclient.html", error=error, form=form)

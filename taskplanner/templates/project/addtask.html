@@ -1,4 +1,8 @@
 {% extends "layout.html" %}
+{% block javascripts %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/taskdate.js') }}"></script>
+{% endblock %}
 {% block body %}
   <h2>Add Task</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
@@ -7,12 +11,12 @@
     {{ form.hidden_tag() }}
     <dl>
       {{ render_field(form.title) }}
-      {{ render_field(form.description) }}
+      {{ render_field(form.description, rows=5, cols=80) }}
       {{ render_field(form.project) }}
       {{ render_field(form.owner) }}
-      {{ render_field(form.start_date, format = '%m/%d/%Y') }}
+      {{ render_field(form.start_date, format = '%m/%d/%Y', id="start_date") }}
       {{ render_field(form.percent_complete) }}
-      {{ render_field(form.due_date, format = '%m/%d/%Y') }}
+      {{ render_field(form.due_date, format = '%m/%d/%Y', id="due_date") }}
       <dd><input type="submit" value="Add Task" /></dd>
     </dl>
   </form>
