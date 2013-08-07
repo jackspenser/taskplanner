@@ -10,3 +10,6 @@ class DevelopmentConfig(Config):
         os.path.split(os.path.abspath(__file__))[0].replace("\\", "/") + \
         '/db.sqlite'
 
+class PostgresConfig(Config):
+	DEBUG = True
+	SQLALCHEMY_DATABASE_URI = '' # fill in for using Postgres at home
