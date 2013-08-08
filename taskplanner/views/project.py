@@ -3,6 +3,7 @@ from taskplanner.model import (db,
                                User,
                                Task,
                                TaskNote,
+                               TaskAttachment,
                                Project,
                                Role,
                                Client)
@@ -27,7 +28,9 @@ from flask import (request,
                    render_template,
                    flash,
                    abort)
+from werkzeug import secure_filename
 import datetime
+import os
 
 @app.route('/')
 @app.route('/projects')
@@ -118,9 +121,20 @@ def add_task():
         theTask.start_date = form.start_date.data
         theTask.percent_complete = form.percent_complete.data
         theTask.due_date = form.due_date.data
-        db.session.add(theTask)
-        db.session.commit()
-        return redirect(url_for('project_view', project_id=theTask.project_id))
+        if form.attachment.data:
+            filename = form.attachment.data.filename
+            if filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
+                safeFN = secure_filename(form.attachment.data.filename)
+                form.attachment.data.save(os.path.join(app.config['UPLOAD_FOLDER'], safeFN))
+                ta = TaskAttachment()
+                ta.filename = safeFN
+                theTask.attachments.append(ta)
+            else:
+                error = "Not a valid file"
+        if not error:
+            db.session.add(theTask)
+            db.session.commit()
+            return redirect(url_for('project_view', project_id=theTask.project_id))
     return render_template("project/addtask.html", error=error, form=form)
 
 @app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])

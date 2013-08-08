@@ -7,7 +7,8 @@ from wtforms import (StringField,
                      IntegerField,
                      DateField,
                      validators,
-                     SubmitField)
+                     SubmitField,
+                     FileField)
 import datetime
 
 class LoginForm(Form):
@@ -60,6 +61,7 @@ class AddTaskForm(Form):
     start_date = DateField('Start Date', [validators.Required()], format='%m/%d/%Y', default=datetime.date.today())
     percent_complete = IntegerField('Percent Complete', [validators.Optional(), validators.NumberRange(min=0, max=100)])
     due_date = DateField('Due Date', [validators.Optional()], format='%m/%d/%Y')
+    attachment = FileField('Attachment', [validators.Optional()])
 	
 class EditTaskForm(AddTaskForm):
 	task_note = TextAreaField("Task Note", [validators.Optional()])

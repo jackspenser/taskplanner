@@ -7,7 +7,7 @@
   <h2>Add Task</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% from "_formhelpers.html" import render_field %}
-  <form action="{{ url_for('add_task') }}" method="post">
+  <form action="{{ url_for('add_task') }}" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <dl>
       {{ render_field(form.title) }}
@@ -17,6 +17,7 @@
       {{ render_field(form.start_date, format = '%m/%d/%Y', id="start_date") }}
       {{ render_field(form.percent_complete) }}
       {{ render_field(form.due_date, format = '%m/%d/%Y', id="due_date") }}
+      {{ render_field(form.attachment) }}
       <dd><input type="submit" value="Add Task" /></dd>
     </dl>
   </form>

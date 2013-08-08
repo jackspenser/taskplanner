@@ -111,6 +111,7 @@ class Task(db.Model):
     percent_complete = db.Column(db.Integer)
     complete_date = db.Column(db.Date)
     notes = db.relationship('TaskNote', cascade="all,delete", backref='task', lazy='dynamic', order_by='TaskNote.created.desc()')
+    attachments = db.relationship('TaskAttachment', cascade="all,delete", backref='task', lazy='dynamic', order_by='TaskAttachment.created.desc()')
     
     def __repr__(self):
         return "<Task %r>" % self.title
@@ -120,6 +121,13 @@ class TaskNote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text)
     created = db.Column(db.DateTime, default=datetime.datetime.now)
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
+
+class TaskAttachment(db.Model):
+    __tablename__ = 'task_attachments'
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.now)
+    filename = db.Column(db.String(200), unique=True)
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
 
 def initialize_db():
