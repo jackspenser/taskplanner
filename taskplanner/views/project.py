@@ -20,14 +20,16 @@ from taskplanner.forms import (LoginForm,
                                EditProjectForm,
                                EditTaskForm,
                                AddTaskForm,
-                               DeleteProjectForm)
+                               DeleteProjectForm,
+                               DeleteFileForm)
 from flask import (request,
                    session,
                    redirect,
                    url_for,
                    render_template,
                    flash,
-                   abort)
+                   abort,
+                   send_from_directory)
 from werkzeug import secure_filename
 import datetime
 import os
@@ -123,14 +125,11 @@ def add_task():
         theTask.due_date = form.due_date.data
         if form.attachment.data:
             filename = form.attachment.data.filename
-            if filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
-                safeFN = secure_filename(form.attachment.data.filename)
-                form.attachment.data.save(os.path.join(app.config['UPLOAD_FOLDER'], safeFN))
-                ta = TaskAttachment()
-                ta.filename = safeFN
-                theTask.attachments.append(ta)
-            else:
-                error = "Not a valid file"
+            safeFN = secure_filename(form.attachment.data.filename)
+            form.attachment.data.save(os.path.join(app.config['UPLOAD_FOLDER'], safeFN))
+            ta = TaskAttachment()
+            ta.filename = safeFN
+            theTask.attachments.append(ta)
         if not error:
             db.session.add(theTask)
             db.session.commit()
@@ -165,8 +164,15 @@ def edit_task(task_id):
             tn = TaskNote()
             tn.description = form.task_note.data
             theTask.notes.append(tn)
+        if form.attachment.data:
+            filename = form.attachment.data.filename
+            safeFN = secure_filename(form.attachment.data.filename)
+            form.attachment.data.save(os.path.join(app.config['UPLOAD_FOLDER'], safeFN))
+            ta = TaskAttachment()
+            ta.filename = safeFN
+            theTask.attachments.append(ta)
         db.session.commit()
-        return redirect(url_for('project_view', project_id=theTask.project_id))
+        return redirect(url_for('task_view', task_id=theTask.id))
     return render_template("project/edittask.html", error=error, theTask=theTask, form=form)
 
 @app.route('/task_view/<int:task_id>')
@@ -184,6 +190,35 @@ def tasks():
     page = int(pageStr)
     tasks = Task.query.order_by(Task.start_date).paginate(page, 20)
     return render_template("project/tasks.html", tasks=tasks)
+
+@app.route('/download/<filename>')
+@login_required
+@required_roles('editor')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/delete/<filename>', methods=['GET', 'POST'])
+@login_required
+@required_roles('editor')
+def delete_file(filename):
+    theTA = TaskAttachment.query.filter_by(filename=filename).first() or abort(404)
+    task_id = theTA.task_id
+    form = DeleteFileForm()
+    if form.validate_on_submit():
+        if form.delete.data:
+            theFullPath = os.path.join(app.config['UPLOAD_FOLDER'], theTA.filename)
+            if os.path.exists(theFullPath):
+                os.remove(theFullPath)
+            db.session.delete(theTA)
+            msg = "{0} deleted!".format(theTA.filename)
+            flash(msg)
+            db.session.commit()
+        else:
+            msg = "{0} not deleted".format(theTA.filename)
+            flash(msg)
+        return redirect(url_for('task_view', task_id=task_id))
+    #raise Exception('stop')
+    return render_template("project/deletefile.html", theTA=theTA, form=form)
 
 # @app.route('/active_tasks')
 # @login_required

@@ -7,7 +7,7 @@
   <h2>Edit Task</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% from "_formhelpers.html" import render_field %}
-  <form action="{{ url_for('edit_task', task_id=theTask.id) }}" method="post">
+  <form action="{{ url_for('edit_task', task_id=theTask.id) }}" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <dl>
       {{ render_field(form.title) }}
@@ -18,6 +18,7 @@
       {{ render_field(form.percent_complete) }}
       {{ render_field(form.due_date, format = '%m/%d/%Y', id="due_date") }}
       {{ render_field(form.task_note, rows=3, cols=80) }}
+      {{ render_field(form.attachment) }}
       <dd><input type="submit" value="Edit Task" /></dd>
     </dl>
   </form>
@@ -26,6 +27,14 @@
   <ul>
     {% for note in theTask.notes %}
     <li>{{ note.description }} {{ note.created.strftime('%m/%d/%Y %I:%M:%S%p') }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if theTask.attachments.count() > 0 %}
+  Attachments:
+  <ul>
+    {% for attachment in theTask.attachments %}
+    <li><a href="{{ url_for('uploaded_file', filename=attachment.filename ) }}" target="_blank">{{ attachment.filename }}</a> [<a href="{{ url_for('delete_file', filename=attachment.filename) }}">X</a>]</li>
     {% endfor %}
   </ul>
   {% endif %}

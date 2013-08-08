@@ -8,8 +8,12 @@ from wtforms import (StringField,
                      DateField,
                      validators,
                      SubmitField,
-                     FileField)
+                     FileField,
+                     ValidationError)
 import datetime
+from taskplanner import app
+from taskplanner.model import TaskAttachment
+from werkzeug import secure_filename
 
 class LoginForm(Form):
     username = StringField('Username', [validators.Required()])
@@ -63,5 +67,16 @@ class AddTaskForm(Form):
     due_date = DateField('Due Date', [validators.Optional()], format='%m/%d/%Y')
     attachment = FileField('Attachment', [validators.Optional()])
 	
+    def validate_attachment(form, field):
+        if field.data:
+            if not field.data.filename.rsplit('.',1)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
+                raise ValidationError('Not a valid file')
+            sFN = secure_filename(field.data.filename)
+            if TaskAttachment.query.filter_by(filename=sFN).count() > 0:
+                raise ValidationError('A file by that name already exists')
+
 class EditTaskForm(AddTaskForm):
 	task_note = TextAreaField("Task Note", [validators.Optional()])
+
+class DeleteFileForm(DeleteUserForm):
+    pass
