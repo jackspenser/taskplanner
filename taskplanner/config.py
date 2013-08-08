@@ -16,4 +16,4 @@ class DevelopmentConfig(Config):
 
 class PostgresConfig(Config):
 	DEBUG = True
-	SQLALCHEMY_DATABASE_URI = '' # fill in for using Postgres at home
+	SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://jeff:XXXXXXXX@localhost:5432/taskplanner'
