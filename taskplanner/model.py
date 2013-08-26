@@ -113,6 +113,14 @@ class Task(db.Model):
     notes = db.relationship('TaskNote', cascade="all,delete", backref='task', lazy='dynamic', order_by='TaskNote.created.desc()')
     attachments = db.relationship('TaskAttachment', cascade="all,delete", backref='task', lazy='dynamic', order_by='TaskAttachment.created.desc()')
     
+    @property
+    def is_past_due(self):
+        td = datetime.date.today()
+        if self.due_date and td > self.due_date:
+            return True
+        else:
+            return False
+
     def __repr__(self):
         return "<Task %r>" % self.title
     

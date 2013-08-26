@@ -56,6 +56,6 @@ input[type="submit"]{
 	padding: 2px 6px;
 	height: 28px;	
 }
-.errors{
+.errors, .past_due{
     color: red;
 }
